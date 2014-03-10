@@ -1,0 +1,18 @@
+<p>
+  <strong>Commenter:</strong>
+  <%= comment.commenter %>
+</p>
+ 
+<p>
+  <strong>Comment:</strong>
+  <%= comment.body %>
+</p>
+
+<p>
+  <% if (current_user.email == comment.commenter) %>
+  	<%= link_to 'Delete Comment', [comment.booking, comment],
+               method: :delete,
+               data: { confirm: 'Are you sure?' },
+               :class => "btn btn-danger" %>
+  <%end%>
+</p>
