@@ -1,0 +1,114 @@
+<h1 align="center">&nbsp;</h1>
+<h2 align="center">Listing bookings </h2>
+<p align="center"><%= link_to 'New Booking', new_booking_path, :class => "btn btn-info active" %><br></p>
+<br> 
+<table border="0" class="text-center" align="center">
+  <tr>
+    <th style="min-width:75px" class="text-center">Time</th>
+    <th colspan="3" class="text-center" >Arcade </th>
+    <th colspan="3" class="text-center" >Pool</th>
+    <th colspan="3" class="text-center" >Foosball</th>
+  </tr>
+
+<%@null = ""%>
+<% @counter = 0 %>
+  <% for i in 9..17  %>
+	<% for j in 0..3 %>
+	<% @counter = @counter + 1 %>
+	  <tr>
+		<% if j == 0 %>
+                        <td style="min-width:75px"><%=i%>:00</td>
+                <% else %>
+                        <td style="min-width:75px"><%=i%>:<%=j*15%></td>
+                <% end %>
+		<% @atArcade = @null %>
+		<% @atPool = @null %>
+		<% @atFoosball = @null %>
+		<% @bookings.each do |booking| %>
+			<% if booking.time.to_s == (@counter - 1).to_s %>
+				<% if booking.station == "Arcade" %>
+					<% if @atArcade != @null %> 
+						<% booking.delete %>
+						<div class="alert alert-danger">
+               <strong>Error!</strong> Time already reserved. Your booking has been removed.
+               <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            </div>
+					<% else %>
+						<% @atArcade = booking.name  %>
+                                		<%@curArcade = booking%>
+					<% end %>
+				<% elsif booking.station == "Pool" %>
+					<% if @atPool != @null %>
+						<% booking.delete %>
+                                                <div class="alert alert-danger">
+               <strong>Error!</strong> Time already reserved.
+            </div>
+                                        <% else %>
+						<% @atPool = booking.name %>
+                                		<%@curPool = booking%>
+					<% end %>
+				<% else %>
+					<% if @atFoosball != @null %>
+						<% booking.delete %>
+                                                <div class="alert alert-danger">
+               <strong>Error!</strong> Time already reserved.
+            </div>
+                                        <% else %>
+						<%@atFoosball = booking.name %>
+                                		<%@curFoosball = booking%>
+					<% end %>
+				<%end%>
+			<%end%>
+		<%end%>
+		  <% if @atArcade != @null %>
+	  	  <td><%= link_to @atArcade, @curArcade,:class => "btn btn-info btn-xs active" %></td>
+            <% if (current_user.email == @curArcade.name) %>
+		              <td><%= link_to 'Edit', edit_booking_path(@curArcade), :class => "btn btn-warning btn-xs active" %></td>
+                  <td><%= link_to 'Delete', booking_path(@curArcade),
+                    method: :delete, data: { confirm: 'Are you sure?' }, :class => "btn btn-danger btn-xs active" %></td>
+            <%else%>
+                  <td style="min-width:75px"></td>
+                  <td style="min-width:75px"></td>
+		        <%end%>
+      <% else %>
+                  <td style="min-width:75px"></td>
+                  <td style="min-width:75px"></td>
+                  <td style="min-width:75px"></td>
+		  <%end%>
+		  <% if @atPool != @null %>
+                  <td><%= link_to @atPool, @curPool, :class => "btn btn-info btn-xs active" %></td>
+                  <% if (current_user.email == @curPool.name) %>
+                    <td><%= link_to 'Edit', edit_booking_path(@curPool), :class => "btn btn-warning btn-xs active" %></td>
+                    <td><%= link_to 'Delete', booking_path(@curPool),
+                    method: :delete, data: { confirm: 'Are you sure?' }, :class => "btn btn-danger btn-xs active" %></td>
+                  <%else%>
+                    <td style="min-width:75px"></td>
+                    <td style="min-width:75px"></td>
+                  <%end%>
+       <% else %>
+                  <td style="min-width:75px"></td>
+                  <td style="min-width:75px"></td>
+                  <td style="min-width:75px"></td>
+      <%end%>
+		  <% if @atFoosball != @null %>
+                  <td><%= link_to @atFoosball, @curFoosball, :class => "btn btn-info btn-xs active" %></td>
+                  <% if (current_user.email == @curFoosball.name) %>
+                    <td ><%= link_to 'Edit', edit_booking_path(@curFoosball), :class => "btn btn-warning btn-xs active" %></td>
+                    <td><%= link_to 'Delete', booking_path(@curFoosball),
+                    method: :delete, data: { confirm: 'Are you sure?' }, :class => "btn btn-danger btn-xs active" %></td>
+                  <%else%>
+                    <td style="min-width:75px"></td>
+                    <td style="min-width:75px"></td>
+                  <%end%>
+      <% else %>
+                  <td style="min-width:75px"></td>
+                  <td style="min-width:75px"></td>
+                  <td style="min-width:75px"></td>
+      <%end%>
+		  
+	  </tr>
+	<%end%>
+  <%end%>
+</table>
+
+ 
